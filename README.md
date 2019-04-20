@@ -19,7 +19,7 @@ Runs the app in the development mode.<br>
 Open [http://localhost:8003](http://localhost:8003) to view it in the browser.<br>
 
 I had to change the default port on which create-react-app runs on,<br>
-which is `3000` to `80003`. This is because I am developing on my Tecno Droipad<br>
+which is `3000` to `8003`. This is because I am developing on my Tecno Droipad<br>
 I do not have a working laptop. So, the editor I am using uses port `3000` annd edits<br>
 in the browser. That causes the change.
 
