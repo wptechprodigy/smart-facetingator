@@ -1,4 +1,4 @@
-#Smart FaceTingator
+# Smart FaceTingator
 This is a fullstack project that uses React for frontend<br>
 Node, Express and Postman for the server and database (backend).
 
