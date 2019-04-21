@@ -12,6 +12,14 @@ body {
   -o-linear-gradient: linear-gadient(to right, rgb(21, 140, 54), rgb(172, 216, 148));
 }
 
+button {
+  cursor: pointer;
+}
+
+.custom-dark-orange {
+  background-color: #C91EA9;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
