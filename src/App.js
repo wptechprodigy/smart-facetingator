@@ -8,10 +8,12 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import ImageRecognition from './components/ImageRecognition/ImageRecognition';
 import './App.css';
 
+// Instatiate Clarifai instance
 const app = new Clarifai.App({
  apiKey: 'c8c806486bb04442a67f3c86468438d0',
 });
 
+// Background particle options
 const particleOptions = {
   "particles": {
     "number": {
@@ -75,7 +77,7 @@ class App extends Component {
       faceBox: '',
     }
   }
-
+  // Calculate face region
   calculateFaceBoxRegion = (data) => {
     const faceRegions = data.outputs[0].data.regions[0].region_info.bounding_box;
     const imageInput = document.getElementById('image-input');
@@ -89,22 +91,19 @@ class App extends Component {
     }    
   }
 
+  // Display the face region
   displayFaceRegion = faceBox => this.setState({faceBox});
 
+  // Set input to new image url
   onInputChange = (event) => {
     this.setState({input: event.target.value});
   }
 
+  // When the Investigate button is clicked
   onButtonSubmit = () => {
+    // Set image url new state
     this.setState({imageUrl: this.state.input})
-    // app.models
-    //   .initModel({
-    //     id: Clarifai.FACE_DETECT_MODEL, 
-    //     version: "aa7f35c01e0642fda5cf400f543e7c40",
-    //   })
-    //   .then(faceDetectModel => faceDetectModel.predict(this.state.input))
-    //   .then(response => this.displayFaceRegion(this.calculateFaceBoxRegion(response)))
-    //   .catch(err => console.log(err));
+    // Clarifai api call to predict face
     app.models
       .predict(
         Clarifai.FACE_DETECT_MODEL, 
