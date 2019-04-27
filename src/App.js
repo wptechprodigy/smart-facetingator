@@ -72,8 +72,24 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      faceBox: '',
     }
   }
+
+  calculateFaceBoxRegion = (data) => {
+    const faceRegions = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const imageInput = document.getElementById('image-input');
+    const width = Number(imageInput.width);
+    const height = Number(imageInput.height);
+    return {
+      leftCol: faceRegions.left_col * width,
+      topRow: faceRegions.top_row * height,
+      rightCol: width - (faceRegions.right_col * width),
+      bottomRow: height - (faceRegions.bottom_row * height),
+    }    
+  }
+
+  displayFaceRegion = faceBox => this.setState({faceBox});
 
   onInputChange = (event) => {
     this.setState({input: event.target.value});
@@ -81,17 +97,20 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input})
+    // app.models
+    //   .initModel({
+    //     id: Clarifai.FACE_DETECT_MODEL, 
+    //     version: "aa7f35c01e0642fda5cf400f543e7c40",
+    //   })
+    //   .then(faceDetectModel => faceDetectModel.predict(this.state.input))
+    //   .then(response => this.displayFaceRegion(this.calculateFaceBoxRegion(response)))
+    //   .catch(err => console.log(err));
     app.models
-      .initModel({
-        id: Clarifai.FACE_DETECT_MODEL, 
-        version: "aa7f35c01e0642fda5cf400f543e7c40",
-      })
-      .then(faceDetectModel => {
-        return faceDetectModel.predict(this.state.input);
-      })
-      .then(response => {
-        let regions = response.outputs[0].data.regions[0].region_info.bounding_box
-      })
+      .predict(
+        Clarifai.FACE_DETECT_MODEL, 
+        this.state.input)
+      .then(response => this.displayFaceRegion(this.calculateFaceBoxRegion(response)))
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -110,6 +129,7 @@ class App extends Component {
         />
         <ImageRecognition 
           imageUrl={this.state.imageUrl}
+          faceBox={this.state.faceBox}
         />
       </div>
     );
