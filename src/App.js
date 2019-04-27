@@ -8,10 +8,12 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import ImageRecognition from './components/ImageRecognition/ImageRecognition';
 import './App.css';
 
+// Instatiate Clarifai instance
 const app = new Clarifai.App({
  apiKey: 'c8c806486bb04442a67f3c86468438d0',
 });
 
+// Background particle options
 const particleOptions = {
   "particles": {
     "number": {
@@ -72,26 +74,42 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      faceBox: '',
     }
   }
+  // Calculate face region
+  calculateFaceBoxRegion = (data) => {
+    const faceRegions = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const imageInput = document.getElementById('image-input');
+    const width = Number(imageInput.width);
+    const height = Number(imageInput.height);
+    return {
+      leftCol: faceRegions.left_col * width,
+      topRow: faceRegions.top_row * height,
+      rightCol: width - (faceRegions.right_col * width),
+      bottomRow: height - (faceRegions.bottom_row * height),
+    }    
+  }
 
+  // Display the face region
+  displayFaceRegion = faceBox => this.setState({faceBox});
+
+  // Set input to new image url
   onInputChange = (event) => {
     this.setState({input: event.target.value});
   }
 
+  // When the Investigate button is clicked
   onButtonSubmit = () => {
+    // Set image url new state
     this.setState({imageUrl: this.state.input})
+    // Clarifai api call to predict face
     app.models
-      .initModel({
-        id: Clarifai.FACE_DETECT_MODEL, 
-        version: "aa7f35c01e0642fda5cf400f543e7c40",
-      })
-      .then(faceDetectModel => {
-        return faceDetectModel.predict(this.state.input);
-      })
-      .then(response => {
-        let regions = response.outputs[0].data.regions[0].region_info.bounding_box
-      })
+      .predict(
+        Clarifai.FACE_DETECT_MODEL, 
+        this.state.input)
+      .then(response => this.displayFaceRegion(this.calculateFaceBoxRegion(response)))
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -110,6 +128,7 @@ class App extends Component {
         />
         <ImageRecognition 
           imageUrl={this.state.imageUrl}
+          faceBox={this.state.faceBox}
         />
       </div>
     );
