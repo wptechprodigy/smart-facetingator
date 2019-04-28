@@ -3,6 +3,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
+import Signin from './components/Signin/Signin';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import ImageRecognition from './components/ImageRecognition/ImageRecognition';
@@ -75,6 +76,7 @@ class App extends Component {
       input: '',
       imageUrl: '',
       faceBox: '',
+      route: 'signin',
     }
   }
   // Calculate face region
@@ -112,6 +114,11 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
+  // When route changes
+  onRouteChange = (route) => {
+    this.setState({ route: route });
+  }
+
   render() {
     return (
       <div className="App">
@@ -119,17 +126,22 @@ class App extends Component {
           className='particles' 
           params={particleOptions}
         />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm 
-          onInputChange={this.onInputChange}
-          onButtonSubmit={this.onButtonSubmit}
-        />
-        <ImageRecognition 
-          imageUrl={this.state.imageUrl}
-          faceBox={this.state.faceBox}
-        />
+        <Navigation onRouteChange={this.onRouteChange} />
+        { this.state.route === 'signin'
+          ? <Signin onRouteChange={this.onRouteChange} />
+          : <div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm 
+                onInputChange={this.onInputChange}
+                onButtonSubmit={this.onButtonSubmit}
+              />
+              <ImageRecognition 
+                imageUrl={this.state.imageUrl}
+                faceBox={this.state.faceBox}
+              />
+            </div>
+        }
       </div>
     );
   }
