@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+// Instantiate Express
 const app = express();
 
+// Body parser to parse incoming data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Dummy database
 const database = {
     users: [
         {
@@ -27,10 +30,12 @@ const database = {
     ] 
 }
 
+// Root route to get all registered users
 app.get('/', (req, res) => {
-    res.status(200).json('The root route is working!');
+    res.status(200).json(database.users);
 })
 
+// POST /login route
 app.post('/login', (req, res) => {
     if (req.body.email === database.users[0].email &&
         req.body.password === database.users[0].password) {
@@ -46,6 +51,21 @@ app.post('/login', (req, res) => {
         }
 })
 
+// POST /register route
+app.post('/register', (req, res) => {
+    const { name, email, password } = req.body;
+    database.users.push({
+        id: 3,
+        name: name,
+        email: email,
+        password: password,
+        entries: 0,
+        joined: new Date(),
+    });
+    res.status(201).json(database.users[database.users.length - 1]);
+})
+
+// PORT declaration
 app.listen('9001', () => {
     console.log('Server running on port 9001');
 });
