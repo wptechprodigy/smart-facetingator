@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "PORT=8003 react-scripts start",
-    "start-dev": "node api/server.js",
+    "start-dev": "nodemon api/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
