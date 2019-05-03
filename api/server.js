@@ -81,6 +81,22 @@ app.get('/profile/:userId', (req, res) => {
     }
 })
 
+// No of times user has detected faces - image-entries
+app.put('/image-entries', (req, res) => {
+    const { id } = req.body;
+    let found = false;
+    database.users.forEach(user => {
+        if (user.id === id) {
+            found = true;
+            user.entries++
+            res.status(200).json(user.entries);
+        }
+    });
+    if (!found) {
+        res.status(404).json('Not found');
+    }
+})
+
 // PORT declaration
 app.listen('9001', () => {
     console.log('Server running on port 9001');
