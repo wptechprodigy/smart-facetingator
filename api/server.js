@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Body parser to parse incoming data
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Dummy database
 const database = {
@@ -63,6 +63,22 @@ app.post('/register', (req, res) => {
         joined: new Date(),
     });
     res.status(201).json(database.users[database.users.length - 1]);
+})
+
+// GET /profile/:userId get a user route
+app.get('/profile/:userId', (req, res) => {
+    const { userId } = req.params;
+    const id = Number(userId);
+    let found = false;
+    database.users.forEach(user => {
+        if (user.id === id) {
+            found = true;
+            return res.status(200).json(user);
+        } 
+    });
+    if (!found) {
+        res.status(404).json('No such user');
+    }
 })
 
 // PORT declaration
